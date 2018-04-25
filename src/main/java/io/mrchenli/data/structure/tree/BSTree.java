@@ -1,7 +1,5 @@
 package io.mrchenli.data.structure.tree;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 public class BSTree<E extends Comparable> {
@@ -24,6 +22,9 @@ public class BSTree<E extends Comparable> {
     public TreeNode insert(E key,TreeNode bst){
         if(bst==null){
             bst = new TreeNode(key);
+            if(root==null){
+                root = bst;
+            }
         }else{
             if(key.compareTo(bst.value)<0){
                 bst.left = insert(key,bst.left);
@@ -34,9 +35,239 @@ public class BSTree<E extends Comparable> {
         return bst;
     }
 
+    /**
+     * insert is ok
+     * @param key
+     */
     public void insert(E key){
        insert(key,root);
     }
+
+
+    /**
+     * 尾递归查找 is ok
+     * @param key
+     * @param bst
+     * @return
+     */
+    public TreeNode find(E key ,TreeNode bst){
+        if(bst==null){
+            return null;//查找失败
+        }
+        if(key.compareTo(bst.value)>0){
+            return find(key,bst.right);
+        }else if(key.compareTo(bst.value)<0){
+            return find(key,bst.left);
+        }else {
+            return bst;
+        }
+    }
+
+    public TreeNode find(E key){
+        return find(key,root);
+    }
+
+
+    public TreeNode findIter(E key){
+        return findIter(key,root);
+    }
+
+
+    public TreeNode findIter(E key ,TreeNode bst){
+        while (bst!=null){
+            if(key.compareTo(bst.value)>0){
+                bst = bst.right;//去右子树里面去找
+            }else if(key.compareTo(bst.value)<0){
+                bst = bst.left;//左子树里面去找
+            }else {
+                return bst;//查找成功
+            }
+        }
+        return null;//查找失败
+    }
+
+
+    public TreeNode findMin(TreeNode bst){
+        if(bst==null){
+            return null;
+        }else if(bst.left==null){
+            return bst;
+        }else{
+            return findMin(bst.left);
+        }
+    }
+
+    public TreeNode findMin(){
+        return findMin(root);
+    }
+
+    public TreeNode findMinIter(TreeNode bst){
+        if(bst!=null){
+            while (bst.left!=null){
+                bst = bst.left;
+            }
+        }
+        return bst;
+    }
+
+    public TreeNode findMinIter(){
+        return findMinIter(root);
+    }
+
+
+
+
+    public TreeNode findMax(TreeNode bst){
+        if(bst ==null){
+            return null;
+        }else if(bst.right == null){
+            return bst;
+        }else
+            return findMax(bst.right);
+    }
+
+    public TreeNode findMax(){
+        return findMax(root);
+    }
+
+    public TreeNode findMaxIter(TreeNode bst){
+        if(bst!=null){
+            while (bst.right!=null){
+                bst = bst.right;
+            }
+        }
+        return bst;
+    }
+
+    public TreeNode findMaxIter(){
+        return findMaxIter(root);
+    }
+
+
+
+    /**
+     * 每个节点遍历的时候都会碰到三次 第二次碰到的时候打印出来就是中序了
+     * @param bst
+     */
+    private void inOrder(TreeNode bst){
+        if(bst!=null){
+            inOrder(bst.left);
+            System.out.print(bst.value+" ");
+            inOrder(bst.right);
+        }
+    }
+
+    /**
+     * 非递归的算法来实现中序遍历
+     * @param bst
+     */
+    private void inOrderIter(TreeNode bst){
+        TreeNode t  = bst;
+        Stack<TreeNode> s = new Stack();
+        while (t!=null||!s.empty()){
+            while (t!=null){//left 走到最底部了
+                s.push(t);
+                t = t.left;
+            }
+            if(!s.empty()){//stack 不为空 弹出来
+                t = s.pop();
+                System.out.print(t.value+" ");
+                t = t.right;
+            }
+        }
+    }
+    public void inOrder(boolean isIter){
+        if(isIter){
+            inOrderIter(root);
+        }else{
+            inOrder(root);
+        }
+        System.out.println();
+    }
+
+
+    private void preOrder(TreeNode bst){
+        if(bst!=null){
+            System.out.print(bst.value+" ");
+            preOrderIter(bst.left);
+            preOrderIter(bst.right);
+        }
+    }
+
+    private void preOrderIter(TreeNode bst){
+        TreeNode t = bst;
+        Stack<TreeNode> s = new Stack<>();
+        while (t!=null||!s.empty()){
+            while (t!=null){
+                System.out.print(t.value+" ");
+                s.push(t);
+                t = t.left;
+            }
+            if(!s.empty()){
+                t = s.pop();
+                t = t.right;
+            }
+        }
+    }
+
+    /**
+     * 先序遍历
+     * @param isIter
+     */
+    public void preOrder(boolean isIter){
+        if(isIter){
+            preOrderIter(root);
+        }else{
+            preOrder(root);
+        }
+        System.out.println();
+    }
+
+
+    private void postOrder(TreeNode bst){
+        if(bst!=null){
+            postOrder(bst.left);
+            postOrder(bst.right);
+            System.out.print(bst.value+" ");
+        }
+    }
+
+    private void postOrderIter(TreeNode bst){
+        TreeNode t = bst;
+        Stack<TreeNode> s = new Stack();
+        while (t!=null||!s.empty()){
+            while (t!=null&&!t.flag){
+                s.push(t);
+                t = t.left;
+            }
+            if(!s.empty()){
+                t = s.pop();
+                if(!t.flag){
+                    t.flag=true;
+                    s.push(t);
+                    t = t.right;
+                }else {
+                    System.out.print(t.value+" ");
+                    t = null;
+                }
+            }
+        }
+    }
+
+    /**
+     * 后续遍历
+     * @param isIter
+     */
+    public void postOrder(boolean isIter){
+        if(isIter){
+            postOrderIter(root);
+        }else {
+            postOrder(root);
+        }
+        System.out.println();
+    }
+
+
 
     /**
      * 删除节点
@@ -76,181 +307,18 @@ public class BSTree<E extends Comparable> {
     }
 
     /**
-     * 尾递归查找
-     * @param key
-     * @param bst
-     * @return
+     * 层序遍历
      */
-    public TreeNode find(E key ,TreeNode bst){
-        if(bst==null){
-            return null;//查找失败
-        }
-        if(key.compareTo(bst.value)>0){
-            return find(key,bst.right);
-        }else if(key.compareTo(bst.value)<0){
-            return find(key,bst.left);
-        }else {
-            return bst;
-        }
+    public void levelOrder(){
+
     }
-
-    public TreeNode find(E key){
-        return find(key,root);
-    }
-
-    public TreeNode findIter(E key){
-        return findIter(key,root);
-    }
-
-
-
-    public TreeNode findIter(E key ,TreeNode bst){
-        while (bst!=null){
-            if(key.compareTo(bst.value)>0){
-                bst = bst.right;//去右子树里面去找
-            }else if(key.compareTo(bst.value)<0){
-                bst = bst.left;//左子树里面去找
-            }else {
-                return bst;//查找成功
-            }
-        }
-        return null;//查找失败
-    }
-
-
-    public TreeNode findMin(TreeNode bst){
-        if(bst==null){
-            return null;
-        }else if(bst.left==null){
-            return bst;
-        }else{
-            return findMin(bst.left);
-        }
-    }
-
-    public TreeNode findMinIter(TreeNode bst){
-        if(bst!=null){
-            while (bst.left!=null){
-                bst = bst.left;
-            }
-        }
-        return bst;
-    }
-
-    public TreeNode findMax(TreeNode bst){
-        if(bst ==null){
-            return null;
-        }else if(bst.right == null){
-            return bst;
-        }else
-            return findMax(bst.right);
-    }
-
-    public TreeNode findMaxIter(TreeNode bst){
-        if(bst!=null){
-            while (bst.right!=null){
-                bst = bst.right;
-            }
-        }
-        return bst;
-    }
-
-    /**
-     * 每个节点遍历的时候都会碰到三次 第二次碰到的时候打印出来就是中序了
-     * @param bst
-     */
-    public void inOrder(TreeNode bst){
-        if(bst!=null){
-            inOrder(bst.left);
-            System.out.println(bst.value);
-            inOrder(bst.right);
-        }
-    }
-
-    /**
-     * 非递归的算法来实现中序遍历
-     * @param bst
-     */
-    public void inOrderIter(TreeNode bst){
-        TreeNode t  = bst;
-        Stack<TreeNode> s = new Stack();
-        while (t!=null||!s.empty()){
-            while (t!=null){//left 走到最底部了
-                s.push(t);
-                t = t.left;
-            }
-            if(!s.empty()){//stack 不为空 弹出来
-                t = s.pop();
-                System.out.print(t.value);
-                t = t.right;
-            }
-        }
-    }
-
-
-    public void preOrder(TreeNode bst){
-        if(bst!=null){
-            System.out.println(bst.value);
-            preOrderIter(bst.left);
-            preOrderIter(bst.right);
-        }
-    }
-
-
-    public void preOrderIter(TreeNode bst){
-        TreeNode t = bst;
-        Stack<TreeNode> s = new Stack<>();
-        while (t!=null||!s.empty()){
-            while (t!=null){
-                System.out.println(t.value);
-                s.push(t);
-                t = t.left;
-            }
-            if(!s.empty()){
-                t = s.pop();
-                t = t.right;
-            }
-        }
-    }
-
-    public void postOrder(TreeNode bst){
-        if(bst!=null){
-            postOrderIter(bst.left);
-            postOrderIter(bst.right);
-            System.out.print(bst.value+" ");
-        }
-    }
-
-    public void postOrderIter(TreeNode bst){
-        TreeNode t = bst;
-        Stack<TreeNode> s = new Stack();
-        while (t!=null||!s.empty()){
-
-            while (t!=null){
-                s.push(t);
-                t = t.left;
-            }
-            if(!s.empty()){
-                t = s.pop();
-                t = t.right;
-                if(t!=null) System.out.print(t.value+" ");
-            }
-        }
-        System.out.println();
-    }
-
-
-
-
-
-
-
-
 
     class TreeNode<E extends Comparable>{
         E value;
         TreeNode left;
         TreeNode right;
+        boolean flag;//标识这个节点是否被访问过 在遍历的后序遍历中会有用
+
 
         public TreeNode(E value) {
             this.value = value;
