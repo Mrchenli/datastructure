@@ -68,7 +68,7 @@ public class HeapSort implements Sort {
     }
 
     public static void main(String[] args) {
-        int[] data = new int[]{12,1,9,22,24,7,34,36,91};
+        int[] data = new int[]{3,2,1,5,6,4};
         Sort sort = new HeapSort();
         sort.sort(data);
         System.out.println(Arrays.toString(data));
