@@ -3,6 +3,10 @@ package io.mrchenli.data.structure.tree;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * 1.可以遍历二叉树的叶子节点
+ * 2.求树的高度
+ */
 public class BSTreeTest {
 
     BSTree bsTree;
@@ -71,14 +75,22 @@ public class BSTreeTest {
      */
     @Test
     public void testLevelOrder(){
-
+        bsTree.levelOrder();
     }
     /**
      * 删除
      */
     @Test
     public void testDelete(){
+        bsTree.levelOrder();
+        bsTree.delete(10);
+        bsTree.levelOrder();
+    }
 
+    @Test
+    public void testHeight(){
+        int h = bsTree.height();
+        System.out.println(h);
     }
 
 }

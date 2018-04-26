@@ -1,6 +1,8 @@
 package io.mrchenli.data.structure.tree;
 
+import java.util.Queue;
 import java.util.Stack;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class BSTree<E extends Comparable> {
 
@@ -293,7 +295,6 @@ public class BSTree<E extends Comparable> {
                 bst.value = tmp.value;//用最小的值替换调当前值
                 bst.right = delete(bst.value,bst.right);//删除右子树里最小节点
             }else{
-                tmp = bst;
                 if(bst.left!=null){
                     bst = bst.left;
                 }else if(bst.right!=null){
@@ -306,12 +307,46 @@ public class BSTree<E extends Comparable> {
         return bst;
     }
 
+    public void delete(E key){
+        delete(key,root);
+    }
+    private int height(TreeNode t){
+        if(t!=null){
+            int lh = height(t.left);
+            int rh = height(t.right);
+            int max=lh>rh?lh:rh;
+            return max +1;
+        }else {
+            return 0;
+        }
+    }
+
+    public int height(){
+       return height(root)-1;
+    }
     /**
-     * 层序遍历
+     * 层序遍历 二叉树遍历其实是把一个二维结构 转换成一维结构
+     *
+     * 可以用队列来实现
      */
     public void levelOrder(){
-
+        if(root==null) return;
+        Queue<TreeNode> q = new LinkedBlockingQueue();
+        q.add(root);
+        while (!q.isEmpty()){
+            TreeNode t = q.poll();
+            System.out.print(t.value+" ");
+            if(t.left!=null){
+                q.add(t.left);
+            }
+            if(t.right!=null){
+                q.add(t.right);
+            }
+        }
+        System.out.println();
     }
+
+
 
     class TreeNode<E extends Comparable>{
         E value;
